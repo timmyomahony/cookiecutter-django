@@ -29,18 +29,18 @@ let pathsConfig = function (appName) {
 
 let paths = pathsConfig();
 
-// CSS assets
-//
-// The SASS files are run through postcss/autoprefixer and placed into one 
-// single main styles.min.css file (and sourcemap)
-
+/**
+ * CSS assets
+ * 
+ * The SASS files are run through postcss/autoprefixer and placed into one 
+ * single main styles.min.css file (and sourcemap)
+ */
 gulp.task('styles', function () {
     let processors = [
         autoprefixer,
         cssnano
     ];
-    console.log(`${paths.src}/sass/main.scss`);
-    let styles = gulp.src(`${paths.src}/sass/main.scss`)
+    let styles = gulp.src(`${paths.src}/sass/styles.scss`)
         .pipe(sourcemaps.init())
         .pipe(sass({
             includePaths: [
@@ -55,11 +55,12 @@ gulp.task('styles', function () {
     return [styles];
 });
 
-// Javascript assets
-//
-// All regular .js files are collected, minified and concatonated into one
-// single main.min.js file (and sourcemap)
-
+/**
+ * Javascript assets
+ * 
+ * All regular .js files are collected, minified and concatonated into one
+ * single main.min.js file (and sourcemap)
+ */
 gulp.task('scripts', function () {
     return gulp.src([`${paths.src}/js/**/*.js`])
         .pipe(sourcemaps.init())
@@ -73,17 +74,15 @@ gulp.task('scripts', function () {
         .pipe(gulp.dest(`${paths.build}/js/`));
 });
 
-// External Javascript assets
-//
-// Any required external libraries are collected, minified and concatonated 
-// into one single vendor.min.js file (and sourcemap)
-
+/**
+ * External Javascript assets
+ * 
+ * Any required external libraries are collected, minified and concatonated 
+ * into one single vendor.min.js file (and sourcemap)
+ */
 gulp.task('vendor', function () {
     return gulp.src([
             'node_modules/jquery/dist/jquery.js',
-            'node_modules/lazysizes/lazysizes.js',
-            'node_modules/lazysizes/plugins/unveilhooks/ls.unveilhooks.js',
-            'node_modules/bowser/bowser.js',
         ])
         .pipe(concat('vendor.min.js'))
         .pipe(uglify())
@@ -97,7 +96,7 @@ gulp.task('imgCompression', function () {
 });
 
 gulp.task('copy', function () {
-    return gulp.src([`${paths.src}/fonts/**/*`, `${paths.src}/videos/**/*`], {
+    return gulp.src([`${paths.src}/fonts/**/*`], {
             base: `${paths.src}`
         })
         .pipe(gulp.dest(`${paths.build}`));
