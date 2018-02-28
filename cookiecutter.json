@@ -9,6 +9,5 @@
     "timezone": "UTC",
     "windows": "n",
     "postgresql_version": ["10", "9.6"],
-    "custom_bootstrap_compilation": "n",
     "open_source_license": ["MIT", "BSD", "GPLv3", "Apache Software License 2.0", "Not open source"]
 }
