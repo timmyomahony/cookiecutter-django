@@ -2,3 +2,7 @@
 !.coveragerc
 !.env
 !.pylintrc
+mediafiles
+staticfiles
+node_modules
+var

@@ -36,7 +36,4 @@ else
 
     pip install -r $PROJECT_DIR/requirements/local.txt
     pip install -r $PROJECT_DIR/requirements/test.txt
-    {% if cookiecutter.use_heroku == "y" -%}
-    pip install -r $PROJECT_DIR/requirements.txt
-    {%- endif %}
 fi

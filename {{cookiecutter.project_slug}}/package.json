@@ -1,54 +1,28 @@
 {
-  "name": "{{cookiecutter.project_slug}}",
-  "version": "{{ cookiecutter.version }}",
-  "dependencies": {},
+  "name": "omahony-pike",
+  "version": "0.1.0",
+  "dependencies": {
+    "jquery": "^3.3.1",
+    "normalize-css": "^2.3.1",
+  },
   "devDependencies": {
-    {% if cookiecutter.js_task_runner == 'Grunt' %}
-    "autoprefixer-core": "~5.2.1",
-    {% if cookiecutter.custom_bootstrap_compilation == 'y' %}
-    "bootstrap": "^4.0.0",
-    {% endif %}
-    "connect-livereload": "~0.3.2",
-    "cssnano": "~2.1.0",
-    "grunt": "~0.4.5",
-    "grunt-bg-shell": "~2.3.1",
-    "grunt-contrib-watch": "~0.6.1",
-    "grunt-postcss": "~0.5.5",
-    "grunt-sass": "~1.0.0",
-    {% if cookiecutter.custom_bootstrap_compilation == 'y' %}
-    "jquery": "^3.2.1-slim",
-    {% endif %}
-    "load-grunt-tasks": "~3.2.0",
-    "pixrem": "~1.3.1",
-    {% if cookiecutter.custom_bootstrap_compilation == 'y' %}
-    "popper.js": "^1.12.3",
-    {% endif %}
-    "time-grunt": "~1.2.1"
-    {% elif cookiecutter.js_task_runner == 'Gulp' %}
-    {% if cookiecutter.custom_bootstrap_compilation == 'y' %}
-    "bootstrap": "^4.0.0",
-    {% endif %}
+    "babel-preset-es2015": "^6.24.1",
     "browser-sync": "^2.14.0",
     "del": "^2.2.2",
     "gulp": "^3.9.1",
-    "gulp-autoprefixer": "^3.1.1",
-    {% if cookiecutter.custom_bootstrap_compilation == 'y' %}
+    "gulp-autoprefixer": "^4.0.0",
+    "gulp-babel": "^6.1.2",
     "gulp-concat": "^2.6.1",
-    {% endif %}
     "gulp-cssnano": "^2.1.2",
     "gulp-imagemin": "^3.0.3",
     "gulp-pixrem": "^1.0.0",
     "gulp-plumber": "^1.1.0",
+    "gulp-postcss": "^7.0.0",
     "gulp-rename": "^1.2.2",
-    "gulp-sass": "^2.3.2",
-    "gulp-uglify": "^2.0.0",
-    "gulp-util": "^3.0.7",
-    {% if cookiecutter.custom_bootstrap_compilation == 'y' %}
-    "jquery": "^3.2.1-slim",
-    "popper.js": "^1.12.3",
-    {% endif %}
+    "gulp-sass": "^3.1.0",
+    "gulp-sourcemaps": "^2.6.0",
+    "gulp-uglify": "^3.0.0",
     "run-sequence": "^1.2.2"
-    {% endif %}
   },
   "engines": {
     "node": ">=0.8.0"

@@ -1,138 +1,135 @@
+let gulp = require('gulp'),
+    pjson = require('./package.json'),
+    concat = require('gulp-concat'),
+    sass = require('gulp-sass'),
+    sourcemaps = require('gulp-sourcemaps'),
+    postcss = require('gulp-postcss'),
+    babel = require('gulp-babel'),
+    autoprefixer = require('gulp-autoprefixer'),
+    cssnano = require('gulp-cssnano'),
+    uglify = require('gulp-uglify'),
+    spawn = require('child_process').spawn,
+    rename = require('gulp-rename'),
+    plumber = require('gulp-plumber'),
+    imagemin = require('gulp-imagemin'),
+    runSequence = require('run-sequence'),
+    browserSync = require('browser-sync').create(),
+    reload = browserSync.reload;
 
-////////////////////////////////
-		//Setup//
-////////////////////////////////
-
-// Plugins
-var gulp = require('gulp'),
-      pjson = require('./package.json'),
-      gutil = require('gulp-util'),
-      sass = require('gulp-sass'),
-      autoprefixer = require('gulp-autoprefixer'),
-      cssnano = require('gulp-cssnano'),
-      {% if cookiecutter.custom_bootstrap_compilation == 'y' %}
-      concat = require('gulp-concat'),
-      {% endif %}
-      rename = require('gulp-rename'),
-      del = require('del'),
-      plumber = require('gulp-plumber'),
-      pixrem = require('gulp-pixrem'),
-      uglify = require('gulp-uglify'),
-      imagemin = require('gulp-imagemin'),
-      spawn = require('child_process').spawn,
-      runSequence = require('run-sequence'),
-      browserSync = require('browser-sync').create(),
-      reload = browserSync.reload;
-
-
-// Relative paths function
-var pathsConfig = function (appName) {
-  this.app = "./" + (appName || pjson.name);
-  var vendorsRoot = 'node_modules/';
-
-  return {
-    {% if cookiecutter.custom_bootstrap_compilation == 'y' %}
-    bootstrapSass: vendorsRoot + '/bootstrap/scss',
-    vendorsJs: [
-      vendorsRoot + 'jquery/dist/jquery.slim.js',
-      vendorsRoot + 'popper.js/dist/umd/popper.js',
-      vendorsRoot + 'bootstrap/dist/js/bootstrap.js'
-    ],
-    {% endif %}
-    app: this.app,
-    templates: this.app + '/templates',
-    css: this.app + '/static/css',
-    sass: this.app + '/static/sass',
-    fonts: this.app + '/static/fonts',
-    images: this.app + '/static/images',
-    js: this.app + '/static/js'
-  }
+let pathsConfig = function (appName) {
+    this.app = "./" + (appName || pjson.name);
+    return {
+        app: this.app,
+        templates: `${this.app}/templates`,
+        index: `index.html`,
+        src: `${this.app}/static/src`,
+        build: `${this.app}/static/build`,
+    }
 };
 
-var paths = pathsConfig();
+let paths = pathsConfig();
 
-////////////////////////////////
-		//Tasks//
-////////////////////////////////
+// CSS assets
+//
+// The SASS files are run through postcss/autoprefixer and placed into one 
+// single main styles.min.css file (and sourcemap)
 
-// Styles autoprefixing and minification
-gulp.task('styles', function() {
-  return gulp.src(paths.sass + '/project.scss')
-    .pipe(sass({
-      includePaths: [
-        {% if cookiecutter.custom_bootstrap_compilation == 'y' %}
-        paths.bootstrapSass,
-        {% endif %}
-        paths.sass
-      ]
-    }).on('error', sass.logError))
-    .pipe(plumber()) // Checks for errors
-    .pipe(autoprefixer({browsers: ['last 2 versions']})) // Adds vendor prefixes
-    .pipe(pixrem())  // add fallbacks for rem units
-    .pipe(gulp.dest(paths.css))
-    .pipe(rename({ suffix: '.min' }))
-    .pipe(cssnano()) // Minifies the result
-    .pipe(gulp.dest(paths.css));
+gulp.task('styles', function () {
+    let processors = [
+        autoprefixer,
+        cssnano
+    ];
+    console.log(`${paths.src}/sass/main.scss`);
+    let styles = gulp.src(`${paths.src}/sass/main.scss`)
+        .pipe(sourcemaps.init())
+        .pipe(sass({
+            includePaths: [
+                'node_modules/'
+            ]
+        }).on('error', sass.logError))
+        .pipe(plumber())
+        .pipe(postcss(processors))
+        .pipe(rename('styles.min.css'))
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(`${paths.build}/css/`));
+    return [styles];
 });
 
-// Javascript minification
-gulp.task('scripts', function() {
-  return gulp.src(paths.js + '/project.js')
-    .pipe(plumber()) // Checks for errors
-    .pipe(uglify()) // Minifies the js
-    .pipe(rename({ suffix: '.min' }))
-    .pipe(gulp.dest(paths.js));
+// Javascript assets
+//
+// All regular .js files are collected, minified and concatonated into one
+// single main.min.js file (and sourcemap)
+
+gulp.task('scripts', function () {
+    return gulp.src([`${paths.src}/js/**/*.js`])
+        .pipe(sourcemaps.init())
+        .pipe(babel({
+            presets: ['es2015']
+        }))
+        .pipe(plumber())
+        .pipe(uglify())
+        .pipe(concat('scripts.min.js'))
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(`${paths.build}/js/`));
 });
 
+// External Javascript assets
+//
+// Any required external libraries are collected, minified and concatonated 
+// into one single vendor.min.js file (and sourcemap)
 
-{% if cookiecutter.custom_bootstrap_compilation == 'y' %}
-// Vendor Javascript minification
-gulp.task('vendor-scripts', function() {
-  return gulp.src(paths.vendorsJs)
-    .pipe(concat('vendors.js'))
-    .pipe(gulp.dest(paths.js))
-    .pipe(plumber()) // Checks for errors
-    .pipe(uglify()) // Minifies the js
-    .pipe(rename({ suffix: '.min' }))
-    .pipe(gulp.dest(paths.js));
-});
-{% endif %}
-
-// Image compression
-gulp.task('imgCompression', function(){
-  return gulp.src(paths.images + '/*')
-    .pipe(imagemin()) // Compresses PNG, JPEG, GIF and SVG images
-    .pipe(gulp.dest(paths.images))
+gulp.task('vendor', function () {
+    return gulp.src([
+            'node_modules/jquery/dist/jquery.js',
+            'node_modules/lazysizes/lazysizes.js',
+            'node_modules/lazysizes/plugins/unveilhooks/ls.unveilhooks.js',
+            'node_modules/bowser/bowser.js',
+        ])
+        .pipe(concat('vendor.min.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest(`${paths.build}/js/`));
 });
 
-// Run django server
-gulp.task('runServer', function(cb) {
-  var cmd = spawn('python', ['manage.py', 'runserver'], {stdio: 'inherit'});
-  cmd.on('close', function(code) {
-    console.log('runServer exited with code ' + code);
-    cb(code);
-  });
+gulp.task('imgCompression', function () {
+    return gulp.src(`${paths.src}/images/*`)
+        .pipe(imagemin()) // Compresses PNG, JPEG, GIF and SVG images
+        .pipe(gulp.dest(`${paths.build}/images/`));
 });
 
-// Browser sync server for live reload
-gulp.task('browserSync', function() {
-    browserSync.init(
-      [paths.css + "/*.css", paths.js + "*.js", paths.templates + '*.html'], {
-        proxy:  "localhost:8000"
+gulp.task('copy', function () {
+    return gulp.src([`${paths.src}/fonts/**/*`, `${paths.src}/videos/**/*`], {
+            base: `${paths.src}`
+        })
+        .pipe(gulp.dest(`${paths.build}`));
+});
+
+gulp.task('runServer', function (cb) {
+    var cmd = spawn('python', ['manage.py', 'runserver_plus'], { stdio: 'inherit' });
+    cmd.on('close', function (code) {
+        console.log('runServer exited with code ' + code);
+        cb(code);
     });
 });
 
-// Watch
-gulp.task('watch', function() {
-
-  gulp.watch(paths.sass + '/*.scss', ['styles']);
-  gulp.watch(paths.js + '/*.js', ['scripts']).on("change", reload);
-  gulp.watch(paths.images + '/*', ['imgCompression']);
-  gulp.watch(paths.templates + '/**/*.html').on("change", reload);
-
+gulp.task('browserSync', function () {
+    browserSync.init(
+        [`${paths.build}/css/.css`, `${paths.build}/js/*.js`, `${paths.templates}/*.html`], {
+            // Proxying the django Docker container
+            // https://stackoverflow.com/questions/42456424/browsersync-within-a-docker-container
+            proxy: "django:8000",
+            open: false
+        });
 });
 
-// Default task
-gulp.task('default', function() {
-    runSequence(['styles', 'scripts', {% if cookiecutter.custom_bootstrap_compilation == 'y' %}'vendor-scripts', {% endif %}'imgCompression'], ['runServer', 'browserSync', 'watch']);
+gulp.task('watch', function () {
+    gulp.watch(`${paths.src}/sass/**/*.scss`, ['styles']).on("change", reload);
+    gulp.watch(`${paths.src}/js/**/*.js`, ['scripts']).on("change", reload);
+    gulp.watch(`${paths.src}/images/**/*`, ['imgCompression']);
+    gulp.watch(`${paths.index}`).on("change", reload);
+});
+
+gulp.task('default', function () {
+    runSequence(
+        ['styles', 'scripts', 'vendor', 'imgCompression', 'copy'],
+        ['browserSync', 'watch']);
 });

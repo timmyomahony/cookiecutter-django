@@ -1,0 +1,14 @@
+site_name: {{ cookiecutter.project_name }}
+theme: readthedocs
+site_url: 
+repo_url: 
+repo_name: {{ cookiecutter.project_slug }}
+site_author: {{ cookiecutter.author_name }}
+docs_dir: src
+site_dir: build
+dev_addr: 127.0.0.1:8005
+
+pages:
+  - Home: index.md
+  - Local Setup: local-setup.md
+  - Server Setup: server-setup.md
