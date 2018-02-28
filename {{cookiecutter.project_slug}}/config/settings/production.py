@@ -243,3 +243,6 @@ ADMIN_URL = env('DJANGO_ADMIN_URL')
 
 # Your production stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+
+# Easy thumbnails
+THUMBNAIL_DEFAULT_STORAGE = 'config.storages.MediaS3Boto3Storage'

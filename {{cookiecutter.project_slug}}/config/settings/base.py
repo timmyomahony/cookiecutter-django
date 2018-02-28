@@ -42,10 +42,12 @@ DJANGO_APPS = [
     'django.contrib.admin',
 ]
 THIRD_PARTY_APPS = [
+    'robots',
 ]
 
 # Apps specific for this project go here.
 LOCAL_APPS = [
+    'core.apps.CoreConfig'
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -159,6 +161,7 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.settings_config'
                 # Your stuff: custom template context processors go here
             ],
         },
@@ -237,3 +240,23 @@ ADMIN_URL = r'^admin-dashboard/'
 
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+
+PROFILE = {
+    'EMAIL': '{{ cookiecutter.email }}',
+    'SOCIAL': {
+        'FACEBOOK': {
+            'USERNAME': '{{ cookiecutter.project_slug }}',
+            'URL': 'https://www.facebook.com/{{ cookiecutter.project_slug }}/'
+        },
+        'INSTAGRAM': {
+            'USERNAME': '{{ cookiecutter.project_slug }}',
+            'URL': 'https://twitter.com/{{ cookiecutter.project_slug }}'
+        },
+        'TWITTER': {
+            'USERNAME': '{{ cookiecutter.project_slug }}',
+            'URL': 'https://www.instagram.com/{{ cookiecutter.project_slug }}/'
+        }
+    }
+}
+
+GOOGLE_ANALYTICS_CODE = ''

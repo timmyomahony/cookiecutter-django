@@ -1,0 +1,138 @@
+/*
+ * Custom styles for the Django admin. These are compiled separately to our
+ * main styles.min.css file and inserted into an overriden admin template
+ */
+
+ @import 'fonts';
+ @import 'mixins';
+ 
+ $color-navy: #263137;
+ $color-off-navy: #263037;
+ $color-off-navy-dark: #141a1e;
+ $color-red: #ff423e;
+ $color-off-red: #ff423e;
+ $color-off-red-dark:#e52b27 ;
+ $color-grey: #e1e2e4;
+ $color-cool-grey: #f4f6f9;
+ 
+ body {
+     -webkit-font-smoothing: antialiased;
+     -moz-osx-font-smoothing: grayscale;
+ }
+ 
+ a:link, a:visited {
+     color: $color-red;
+ }
+ 
+ a:hover {
+     text-decoration: underline;
+ }
+ 
+ /* Header */
+ 
+ #header {
+     background-color: $color-navy;
+     color: $color-grey;
+ }
+ 
+ #header a:link, #header a:visited {
+     color: $color-red;
+ }
+ 
+ #branding h1, #branding h1 a:link, #branding h1 a:visited {
+     color: $color-grey;
+ }
+ 
+ #user-tools {
+     font-size: 0.9rem;
+     text-transform: initial;
+ }
+ 
+ #user-tools a {
+     font-weight: 400;
+     border-bottom: 0;
+ 
+     &:hover {
+         text-decoration: underline;
+     }
+ }
+ 
+ /* Breadcrumbs */
+ 
+ div.breadcrumbs {
+     background-color: $color-grey;
+     color: $color-navy;
+ 
+     a {
+         color: $color-red;
+ 
+         &:hover {
+             color: $color-red;
+             text-decoration: underline;
+         }
+     }
+ }
+ 
+ /* Sections */
+ 
+ .module h2, .module caption, .inline-group h2 {
+     background-color: $color-grey;
+ }
+ 
+ a.section:link,
+ a.section:visited,
+ .module caption,
+ .inline-group h2 {
+     font-size: 0.85rem;
+     color: $color-navy;
+     text-transform: initial;
+ }
+ 
+ /* Buttons */
+ 
+ .button,
+ input[type=submit],
+ input[type=button],
+ .submit-row input,
+ a.button {
+     background-color: $color-off-navy;
+     transition: background-color .3s ease;
+ }
+ 
+ .button:active,
+ input[type=submit]:active,
+ input[type=button]:active,
+ .button:focus,
+ input[type=submit]:focus,
+ input[type=button]:focus,
+ .button:hover,
+ input[type=submit]:hover,
+ input[type=button]:hover {
+     background-color: $color-off-navy-dark;
+ }
+ 
+ .button.default,
+ input[type=submit].default,
+ .submit-row input.default {
+     background-color: $color-off-red;
+     transition: background-color .3s ease;
+ }
+ 
+ .button.default:active,
+ input[type=submit].default:active,
+ .button.default:focus,
+ input[type=submit].default:focus,
+ .button.default:hover,
+ input[type=submit].default:hover {
+     background-color: $color-off-red-dark;
+ }
+ 
+ /* Tables */
+ 
+ td, th {
+     font-size: 0.85rem;
+ }
+ 
+ .row2 {
+     background-color: $color-cool-grey;
+ }
