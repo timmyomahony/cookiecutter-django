@@ -52,7 +52,12 @@ gulp.task('styles', function () {
         .pipe(rename('styles.min.css'))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(`${paths.build}/css/`));
-    return [styles];
+    let admin = gulp.src(`${paths.src}/sass/admin.scss`)
+        .pipe(sass().on('error', sass.logError))
+        .pipe(plumber())
+        .pipe(rename('admin.min.css'))
+        .pipe(gulp.dest(`${paths.build}/css/`));
+    return [styles, admin];
 });
 
 /**
@@ -61,30 +66,18 @@ gulp.task('styles', function () {
  * All regular .js files are collected, minified and concatonated into one
  * single main.min.js file (and sourcemap)
  */
-gulp.task('styles', function() {
-    let processors = [
-      autoprefixer,
-      cssnano
-    ];
-    let styles = gulp.src(`${paths.src}/sass/main.scss`)
-      .pipe(sourcemaps.init())
-      .pipe(sass({
-        includePaths: [
-          'node_modules/'
-        ]
-      }).on('error', sass.logError))
-      .pipe(plumber())
-      .pipe(postcss(processors))
-      .pipe(rename('styles.min.css'))
-      .pipe(sourcemaps.write('.'))
-      .pipe(gulp.dest(`${paths.build}/css/`));
-    let admin = gulp.src(`${paths.src}/sass/admin.scss`)
-      .pipe(sass().on('error', sass.logError))
-      .pipe(plumber())
-      .pipe(rename('admin.min.css'))
-      .pipe(gulp.dest(`${paths.build}/css/`));
-    return [styles, admin];
-  });
+gulp.task('scripts', function () {
+    return gulp.src([`${paths.src}/scripts/**/*.js`])
+        .pipe(sourcemaps.init())
+        .pipe(babel({
+            presets: ['es2015']
+        }))
+        .pipe(plumber())
+        .pipe(uglify())
+        .pipe(concat('scripts.min.js'))
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest(`${paths.build}/js/`));
+});
 
 /**
  * External Javascript assets

@@ -34,5 +34,5 @@ pytz==2018.3
 django-redis==4.8.0
 redis>=2.10.5
 
-django-robots==3.0
+-e git://github.com/jazzband/django-robots.git@3.1.0#egg=django-robots
 easy-thumbnails==2.5.0

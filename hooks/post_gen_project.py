@@ -96,19 +96,6 @@ def set_django_secret_key(file_path):
     )
     return django_secret_key
 
-
-def set_postgres_user(file_path,
-                      value=None):
-    postgres_user = set_flag(
-        file_path,
-        '!!!SET POSTGRES_USER!!!',
-        value=value,
-        length=8,
-        using_ascii_letters=True
-    )
-    return postgres_user
-
-
 def set_postgres_password(file_path):
     postgres_password = set_flag(
         file_path,

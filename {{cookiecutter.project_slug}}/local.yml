@@ -14,7 +14,7 @@ services:
     volumes:
       - .:/app
     environment:
-      - POSTGRES_USER=!!!SET POSTGRES_USER!!!
+      - POSTGRES_USER={{ cookiecutter.project_slug }}
       - USE_DOCKER=yes
     ports:
       - "8000:8000"
@@ -28,4 +28,19 @@ services:
       - postgres_data_local:/var/lib/postgresql/data
       - postgres_backup_local:/backups
     environment:
-      - POSTGRES_USER=!!!SET POSTGRES_USER!!!
+      - POSTGRES_USER={{ cookiecutter.project_slug }}
+    ports:
+      - "5432:5432"
+
+  node:
+    build:
+      context: .
+      dockerfile: ./compose/local/node/Dockerfile
+    depends_on:
+      - django
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+      - "3001:3001"
