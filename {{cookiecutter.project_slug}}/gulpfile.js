@@ -67,7 +67,7 @@ gulp.task('styles', function () {
  * single main.min.js file (and sourcemap)
  */
 gulp.task('scripts', function () {
-    return gulp.src([`${paths.src}/scripts/**/*.js`])
+    return gulp.src([`${paths.src}/js/**/*.js`])
         .pipe(sourcemaps.init())
         .pipe(babel({
             presets: ['es2015']

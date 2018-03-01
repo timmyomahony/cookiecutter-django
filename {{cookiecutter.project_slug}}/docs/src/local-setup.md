@@ -6,7 +6,7 @@ The first step is to clone the repo to you machine:
 
 ```sh
 $ git clone git@github.com:{{ cookiecutter.project_slug }}/{{ cookiecutter.project_slug }}.git
-$ cd jdslabs
+$ cd {{ cookiecutter.project_slug }}
 ```
 
 ## Install Docker

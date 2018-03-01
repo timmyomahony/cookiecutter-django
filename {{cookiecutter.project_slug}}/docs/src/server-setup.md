@@ -159,7 +159,7 @@ $ cat ~/.ssh/id_rsa.pub
 
 Now add a new "Deployment Key" via Github
 
-- https://github.com/weareferal/feral/settings/keys
+- https://github.com/{{ cookiecutter.project_slug }}/{{ cookiecutter.project_slug }}/settings/keys
 
 And paste in the public key for the server.
 
@@ -181,8 +181,8 @@ Host github.com
 
 ```sh
 $ cd ~/
-$ git clone git@github.com:weareferal/feral.git
-$ cd feral
+$ git clone git@github.com:{{ cookiecutter.project_slug }}/{{ cookiecutter.project_slug }}.git
+$ cd {{ cookiecutter.project_slug }}
 ```
 
 ## Setup accounts
@@ -210,7 +210,7 @@ Create a new bucket and add the following policy:
                 "AWS": "*"
             },
             "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::feral/*"
+            "Resource": "arn:aws:s3:::{{ cookiecutter.project_slug }}/*"
         }
     ]
 }
@@ -237,29 +237,29 @@ $ cp env.example .env
 ```
 
 ```
-POSTGRES_PASSWORD=...  # make sure there's no commas
-POSTGRES_USER=feral
+POSTGRES_PASSWORD=...  # make sure there's no colons
+POSTGRES_USER={{ cookiecutter.project_slug }}
 CONN_MAX_AGE=60
 
 # Domain name, used by caddy
-DOMAIN_NAME=weareferal.com
+DOMAIN_NAME={{ cookiecutter.domain }}
 
 # General settings
 # DJANGO_READ_DOT_ENV_FILE=True
 DJANGO_ADMIN_URL=admin-dashboard/
 DJANGO_SETTINGS_MODULE=config.settings.production
 DJANGO_SECRET_KEY=...
-DJANGO_ALLOWED_HOSTS=weareferal.com
+DJANGO_ALLOWED_HOSTS={{ cookiecutter.domain }}
 
 # AWS Settings
 DJANGO_AWS_ACCESS_KEY_ID=
 DJANGO_AWS_SECRET_ACCESS_KEY=
-DJANGO_AWS_STORAGE_BUCKET_NAME=feral
+DJANGO_AWS_STORAGE_BUCKET_NAME={{ cookiecutter.project_name }}
 
 # Used with email
 DJANGO_MAILGUN_API_KEY=key-xxx
-DJANGO_SERVER_EMAIL=info@weareferal.com
-MAILGUN_SENDER_DOMAIN=mg.weareferal.com
+DJANGO_SERVER_EMAIL={{ cookiecutter.email }}
+MAILGUN_SENDER_DOMAIN=mg.{{ cookiecutter.domain }}
 
 # Security! Better to use DNS for this task, but you can use redirect
 DJANGO_SECURE_SSL_REDIRECT=False
@@ -305,35 +305,35 @@ by editing `/etc/supervisor/supervisor.conf` file and adding the following:
 
 ```
 [unix_http_server]
-file=/var/run/supervisord.sock
+file=/var/run/supervisor.sock
 ...
 chown=admin:admin
 
 ...
 
 [supervisorctl]
-serverurl = unix:///var/run/supervisord.sock
+serverurl = unix:///var/run/supervisor.sock
 ```
 
 hen make sure to create the socket file:
 
 ```
-sudo touch /var/run/supervisord.sock
-sudo chown admin:admin /var/run/supervisord.sock
+sudo touch /var/run/supervisor.sock
+sudo chown admin:admin /var/run/supervisor.sock
 ```
 
 Create a new config:
 
 ```sh
-$ sudo vim /etc/supervisor/conf.d/feral.conf
+$ sudo vim /etc/supervisor/conf.d/{{ cookiecutter.project_slug }}.conf
 ```
 
 and add the following:
 
 ```
-[program:feral]
+[program:{{ cookiecutter.project_slug }}]
 command=docker-compose -f production.yml up
-directory=/home/admin/feral
+directory=/home/admin/{{ cookiecutter.project_slug }}
 user=admin
 redirect_stderr=true
 autostart=true

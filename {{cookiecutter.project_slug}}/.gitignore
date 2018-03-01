@@ -9,8 +9,8 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-build/
 develop-eggs/
+build/
 dist/
 downloads/
 eggs/
@@ -297,8 +297,7 @@ tags
 pyvenv.cfg
 pip-selfcheck.json
 
-{{ cookiecutter.project_slug }}/media/
-
 # Added to maintain local compose files which are ignored by something above.
 # See issue https://github.com/pydanny/cookiecutter-django/issues/1321
 !/compose/local/
+!/{{ cookiecutter.project_slug }}/static/build
