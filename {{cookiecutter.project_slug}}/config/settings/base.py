@@ -43,6 +43,7 @@ DJANGO_APPS = [
 ]
 THIRD_PARTY_APPS = [
     'robots',
+    'easy_thumbnails'
 ]
 
 # Apps specific for this project go here.
