@@ -111,7 +111,6 @@ def initialize_dotenv(postgres_user):
     # Initializing `env.example` first.
     envexample_file_path = os.path.join(PROJECT_DIR_PATH, 'env.example')
     set_django_secret_key(envexample_file_path)
-    set_postgres_user(envexample_file_path, value=postgres_user)
     set_postgres_password(envexample_file_path)
     # Renaming `env.example` to `.env`.
     dotenv_file_path = os.path.join(PROJECT_DIR_PATH, '.env')
@@ -119,8 +118,7 @@ def initialize_dotenv(postgres_user):
 
 
 def initialize_localyml(postgres_user):
-    set_postgres_user(os.path.join(PROJECT_DIR_PATH, 'local.yml'), value=postgres_user)
-
+    pass
 
 def initialize_local_settings():
     set_django_secret_key(os.path.join(PROJECT_DIR_PATH, 'config', 'settings', 'local.py'))
