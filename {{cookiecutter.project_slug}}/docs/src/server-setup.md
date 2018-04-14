@@ -332,7 +332,7 @@ and add the following:
 
 ```
 [program:{{ cookiecutter.project_slug }}]
-command=docker-compose -f production.yml up
+command=docker-compose -f production.yml up --build
 directory=/home/admin/{{ cookiecutter.project_slug }}
 user=admin
 redirect_stderr=true
