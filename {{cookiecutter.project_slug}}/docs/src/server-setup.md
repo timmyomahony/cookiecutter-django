@@ -52,8 +52,8 @@ $ sudo apt-get install vim git docker docker-compose supervisor
 ## Configure git
 
 ```sh
-$ sudo git config --global user.name "Timmy O'Mahony"
-$ sudo git config --global user.email "hey@timmyomahony.com"
+$ sudo git config --global user.name "{{cookiecutter.author_name}}"
+$ sudo git config --global user.email "{{cookiecutter.email}}"
 $ sudo git config --global core.editor "vim"
 ```
 
@@ -94,7 +94,7 @@ You should now be able to log out of the server, and log in again with you
 key:
 
 ```sh
-$ ssh -i ~/.ssh/id_rsa {{ cookiecutter.email }}
+$ ssh -i ~/.ssh/id_rsa hey@timmyomahony.com
 ```
 
 ## Update SSH configuration
@@ -159,7 +159,7 @@ $ cat ~/.ssh/id_rsa.pub
 
 Now add a new "Deployment Key" via Github
 
-- https://github.com/{{ cookiecutter.project_slug }}/{{ cookiecutter.project_slug }}/settings/keys
+- https://github.com/{{cookiecutter.project_slug}}/{{cookiecutter.project_slug}}/settings/keys
 
 And paste in the public key for the server.
 
@@ -181,8 +181,8 @@ Host github.com
 
 ```sh
 $ cd ~/
-$ git clone git@github.com:{{ cookiecutter.project_slug }}/{{ cookiecutter.project_slug }}.git
-$ cd {{ cookiecutter.project_slug }}
+$ git clone git@github.com:{{cookiecutter.project_slug}}/{{cookiecutter.project_slug}}.git
+$ cd {{cookiecutter.project_slug}}
 ```
 
 ## Setup accounts
@@ -210,7 +210,7 @@ Create a new bucket and add the following policy:
                 "AWS": "*"
             },
             "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::{{ cookiecutter.project_slug }}/*"
+            "Resource": "arn:aws:s3:::{{cookiecutter.project_slug}}/*"
         }
     ]
 }
@@ -237,35 +237,36 @@ $ cp env.example .env
 ```
 
 ```
-POSTGRES_PASSWORD=...  # make sure there's no colons
-POSTGRES_USER={{ cookiecutter.project_slug }}
+# LETTERS AND DIGITS ONLY ARGH!
+POSTGRES_PASSWORD=
+POSTGRES_USER={{cookiecutter.project_slug}}
 CONN_MAX_AGE=60
 
 # Domain name, used by caddy
-DOMAIN_NAME={{ cookiecutter.domain_name }}
+DOMAIN_NAME={{cookiecutter.project_slug}}.com
 
 # General settings
 # DJANGO_READ_DOT_ENV_FILE=True
 DJANGO_ADMIN_URL=admin-dashboard/
 DJANGO_SETTINGS_MODULE=config.settings.production
-DJANGO_SECRET_KEY=...
-DJANGO_ALLOWED_HOSTS={{ cookiecutter.domain_name }}
+DJANGO_SECRET_KEY=
+DJANGO_ALLOWED_HOSTS={{cookiecutter.domain}}
 
 # AWS Settings
 DJANGO_AWS_ACCESS_KEY_ID=
 DJANGO_AWS_SECRET_ACCESS_KEY=
-DJANGO_AWS_STORAGE_BUCKET_NAME={{ cookiecutter.project_name }}
+DJANGO_AWS_STORAGE_BUCKET_NAME={{cookiecutter.project_slug}}
 
 # Used with email
 DJANGO_MAILGUN_API_KEY=key-xxx
-DJANGO_SERVER_EMAIL={{ cookiecutter.email }}
-MAILGUN_SENDER_DOMAIN=mg.{{ cookiecutter.domain_name }}
+DJANGO_SERVER_EMAIL=info@{{cookiecutter.project_slug}}.com
+MAILGUN_SENDER_DOMAIN=mg.{{cookiecutter.project_slug}}.com
 
 # Security! Better to use DNS for this task, but you can use redirect
 DJANGO_SECURE_SSL_REDIRECT=False
 
 # Sentry
-DJANGO_SENTRY_DSN=...
+DJANGO_SENTRY_DSN=
 ```
 
 ## Setup Docker
@@ -305,40 +306,52 @@ by editing `/etc/supervisor/supervisor.conf` file and adding the following:
 
 ```
 [unix_http_server]
-file=/var/run/supervisor.sock
+file=/var/run/supervisord.sock
 ...
 chown=admin:admin
 
 ...
 
 [supervisorctl]
-serverurl = unix:///var/run/supervisor.sock
+serverurl = unix:///var/run/supervisord.sock
 ```
 
 hen make sure to create the socket file:
 
 ```
-sudo touch /var/run/supervisor.sock
-sudo chown admin:admin /var/run/supervisor.sock
+sudo touch /var/run/supervisord.sock
+sudo chown admin:admin /var/run/supervisord.sock
 ```
 
-Create a new config:
+Copy the config
 
 ```sh
-$ sudo vim /etc/supervisor/conf.d/{{ cookiecutter.project_slug }}.conf
+$ sudo cp /home/admin/{{cookiecutter.project_slug}}/compose/production/supervisor.conf /etc/supervisor/conf.d/{{cookiecutter.project_slug}}.conf
 ```
 
-and add the following:
+Here's what is should look like:
 
 ```
-[program:{{ cookiecutter.project_slug }}]
-command=docker-compose -f production.yml up --build
-directory=/home/admin/{{ cookiecutter.project_slug }}
+[program:{{cookiecutter.project_slug}}]
+command=/home/admin/{{cookiecutter.project_slug}}/compose/production/start.sh
+directory=/home/admin/{{cookiecutter.project_slug}}
 user=admin
-redirect_stderr=true
 autostart=true
 autorestart=true
 priority=10
+```
+
+This will run the following script to rebuild the project:
+
+```sh
+#!/bin/bash
+cd /home/admin/{{cookiecutter.project_slug}}/
+docker-compose -f production.yml build
+docker-compose -f production.yml run django python manage.py migrate
+docker-compose -f production.yml run django python manage.py collectstatic --noinput
+
+docker-compose -f production.yml down
+docker-compose -f production.yml up
 ```
 
 then start it
