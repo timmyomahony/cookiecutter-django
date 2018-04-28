@@ -25,13 +25,13 @@ env.app = '/home/admin/{{cookiecutter.project_slug}}/'
 @task
 def production():
     env.branch = 'master'
-    env.hosts = ['{{cookiecutter.project_slug}}.com:30000', ]
+    env.hosts = ['{{cookiecutter.domain}}.com:30000', ]
 
 
 @task
 def staging():
     env.branch = 'develop'
-    env.hosts = ['{{cookiecutter.project_slug}}.com:30000', ]
+    env.hosts = ['{{cookiecutter.domain}}.com:30000', ]
 
 
 @task
