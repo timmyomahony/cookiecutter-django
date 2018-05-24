@@ -250,7 +250,7 @@ DOMAIN_NAME={{cookiecutter.project_slug}}.com
 DJANGO_ADMIN_URL=admin-dashboard/
 DJANGO_SETTINGS_MODULE=config.settings.production
 DJANGO_SECRET_KEY=
-DJANGO_ALLOWED_HOSTS={{cookiecutter.domain}}
+DJANGO_ALLOWED_HOSTS={{cookiecutter.domain_name}}
 
 # AWS Settings
 DJANGO_AWS_ACCESS_KEY_ID=
