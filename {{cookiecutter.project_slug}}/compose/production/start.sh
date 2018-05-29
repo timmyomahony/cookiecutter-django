@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 cd /home/admin/{{cookiecutter.project_slug}}/
 docker-compose -f production.yml build
 docker-compose -f production.yml run django python manage.py migrate
