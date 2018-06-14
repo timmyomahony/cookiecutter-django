@@ -9,8 +9,7 @@ $ adduser --home /home/admin/ --shell /bin/bash admin
 
 If you get the error:
 
-```sh
-adduser: The group `admin` already exists.
+> adduser: The group `admin` already exists.
 
 when adding a user, include the flag `--ingroup admin`:
 
