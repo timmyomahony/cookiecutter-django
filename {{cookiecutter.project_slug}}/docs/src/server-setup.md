@@ -340,17 +340,10 @@ autorestart=true
 priority=10
 ```
 
-This will run the following script to rebuild the project:
+Make the `start.sh` script executable:
 
 ```sh
-#!/bin/bash
-cd /home/admin/{{cookiecutter.project_slug}}/
-docker-compose -f production.yml build
-docker-compose -f production.yml run django python manage.py migrate
-docker-compose -f production.yml run django python manage.py collectstatic --noinput
-
-docker-compose -f production.yml down
-docker-compose -f production.yml up
+$ chmod +x /home/admin/{{cookiecutter.project_slug}}/compose/production/start.sh
 ```
 
 then start it
