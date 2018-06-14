@@ -242,7 +242,7 @@ POSTGRES_USER={{cookiecutter.project_slug}}
 CONN_MAX_AGE=60
 
 # Domain name, used by caddy
-DOMAIN_NAME={{cookiecutter.project_slug}}.com
+DOMAIN_NAME={{cookiecutter.domain_name}}
 
 # General settings
 # DJANGO_READ_DOT_ENV_FILE=True
@@ -258,8 +258,8 @@ DJANGO_AWS_STORAGE_BUCKET_NAME={{cookiecutter.project_slug}}
 
 # Used with email
 DJANGO_MAILGUN_API_KEY=key-xxx
-DJANGO_SERVER_EMAIL=info@{{cookiecutter.project_slug}}.com
-MAILGUN_SENDER_DOMAIN=mg.{{cookiecutter.project_slug}}.com
+DJANGO_SERVER_EMAIL=info@{{cookiecutter.domain_name}}
+MAILGUN_SENDER_DOMAIN=mg.{{cookiecutter.domain_name}}
 
 # Security! Better to use DNS for this task, but you can use redirect
 DJANGO_SECURE_SSL_REDIRECT=False
