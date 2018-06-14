@@ -13,7 +13,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: v1-{{cookiecutter.project_slug}}-\{\{ .Branch \}\}-\{\{ checksum "requirements/test.txt" \}\}
+          key: v1_{{cookiecutter.project_slug}}-\{\{ .Branch \}\}-\{\{ checksum "requirements/test.txt" \}\}
       - run:
           name: Install Python dependencies
           command: |
@@ -21,7 +21,7 @@ jobs:
             . venv/bin/activate
             pip install -r requirements/test.txt
       - save_cache:
-          key: v1-{{cookiecutter.project_slug}}-\{\{ .Branch \}\}-\{\{ checksum "requirements/test.txt" \}\}
+          key: v1_{{cookiecutter.project_slug}}-\{\{ .Branch \}\}-\{\{ checksum "requirements/test.txt" \}\}
           paths:
             - 'venv'
       - run:
