@@ -41,7 +41,7 @@ jobs:
       - run:
           name: Deploy via Fabric
           command: |
-            sudo pip install fabric
+            sudo pip install fabric==1.14.0
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               fab -f .circleci/deploy.py -i ~/.ssh/id_rsa production deploy
             else
